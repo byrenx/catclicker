@@ -1,10 +1,13 @@
 $(function(){
     var catModel = {
+	current_cat: null,
 	cats: [],
+	size: 5,
 	init: function(){
-	    // if(!localStorage.cats){
-	    // 	localStorage.cats = [];
-	    // }
+	    for(var i=0; i<this.size; i++){
+		this.add({name: 'Cat'+i,
+			      clicks: 0});
+	    }
 	},
 	add: function(cat_object){
 	    this.cats.push(cat_object);
@@ -15,53 +18,54 @@ $(function(){
     };
 
     var controller = {
-	Ncats: 5,
-	addNewCats: function(){
-	    for(var i=0; i<this.Ncats; i++){
-		catModel.add({name: 'Cat'+i,
-			      clicks: 0});
-	    }
-	},
-	addClicks: function(cat){
-	    cat.clicks += 1;
-	},
-	renderAllCats: function(){
-	    this.addNewCats();
-	    var cats = catModel.getAllCats();
-	    for(var i=0; i<cats.length; i++){
-		view.renderCat(cats[i]);
-	    }
-	},
 	init: function(){
 	    catModel.init();
-	    this.renderAllCats();
+	    view.init();
+	    this.listAllCats();
+	},
+	addClicks: function(){
+	    var cat = this.getCurrentCat();
+	    cat.clicks++;
+	    view.render(cat);
+	},
+	listAllCats: function(){
+	    var cats = catModel.getAllCats();
+	    for(var i=0; i<cats.length; i++){
+		view.renderCatLink(cats[i]);
+	    }
+	},
+	getCurrentCat: function(){
+	    return catModel.current_cat;
+	},
+	setCurrentCat: function(cat){
+	    catModel.current_cat = cat;
+	    view.render(cat);
 	}
     };
 
     var view = {
-	renderUpdate: function(cat){
-	    console.log('clicked');
+	init: function(){
+	    $('#cat-name').click(function(e){
+		controller.addClicks();
+	    });
 	},
-
-	renderCat: function(cat){
-	    var cat_name = document.createElement('span');
-	    cat_name.textContent = cat.name;
-	    var clicks = document.createElement('span');
-	    clicks.setAttribute('id', 'clicks');
-	    clicks.textContent = cat.clicks;
-	    
-	    var div = document.createElement('div');
-	    div.setAttribute('id', cat.name);
-	    div.appendChild(cat_name);
-	    div.appendChild(clicks);
-	    div.addEventListener('click', (function(cat){
+	renderCatLink: function(cat){
+	    var anchor = document.createElement('a');
+	    anchor.textContent = cat.name;
+	    var link_elem = document.createElement('li');
+	    link_elem.appendChild(anchor);
+	    anchor.addEventListener('click', (function(cat){
 		return function(){
-		    controller.addClicks(cat);
-		    $('#'+cat.name + ' #clicks').html(cat.clicks);
+		    controller.setCurrentCat(cat);
 		}
 	    })(cat));
-	    document.body.appendChild(div);
+
+	    $('#cat-list').append(link_elem);
 	},
+	render: function(cat){
+	    $('#click-count').html(cat.clicks);
+	    $('#cat-name').html(cat.name);
+	}
     };
 
     controller.init();
