@@ -10,6 +10,27 @@
     <div id="cat-container">
       <p id="cat-name"></p>
       <span id="click-count"></span>
+      <button id="admin-btn">Admin</button>
+      <form id="admin-form">
+	<div>
+	  <label>Cat Name</label>
+	  <input id="input-cat-name" type="text">
+	</div>
+	<div>
+	  <label>Image Url</label>
+	  <input id="input-img-src" type="text">
+	</div>
+	<div>
+	  <p>
+	    <strong># of Clicks</strong>&nbsp;&nbsp;
+	    <span id="n-clicks"></span>
+	  </p>
+	</div>
+	<div>
+	  <button id="cancel-save">Cancel</button>
+	  <button id="save-cat">Save</button>
+	</div>
+      </form>
     </div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="js/catclicker.js"></script>
